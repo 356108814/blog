@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CDH,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="系统环境软件操作系统：centos7CDH：cdh5.8.0java:jdk1.7 硬件机器列表master：172.16.2.190slaves：172.16.2.191~172.16.2.194">
+<meta name="keywords" content="CDH">
+<meta property="og:type" content="article">
+<meta property="og:title" content="离线安装CDH">
+<meta property="og:url" content="http://236g.com/2016/11/17/offline-install-cdh/index.html">
+<meta property="og:site_name" content="晨曦之光">
+<meta property="og:description" content="系统环境软件操作系统：centos7CDH：cdh5.8.0java:jdk1.7 硬件机器列表master：172.16.2.190slaves：172.16.2.191~172.16.2.194">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-03T04:23:51.432Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="离线安装CDH">
+<meta name="twitter:description" content="系统环境软件操作系统：centos7CDH：cdh5.8.0java:jdk1.7 硬件机器列表master：172.16.2.190slaves：172.16.2.191~172.16.2.194">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://236g.com/2016/11/17/offline-install-cdh/">
+
+
+
+
+
+  <title>离线安装CDH | 晨曦之光</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">晨曦之光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">既然选择了远方，便只顾风雨兼程</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://236g.com/2016/11/17/offline-install-cdh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="晨曦之光">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="晨曦之光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">离线安装CDH</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-17T22:21:17+08:00">
+                2016-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术/" itemprop="url" rel="index">
+                    <span itemprop="name">技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h4><h5 id="软件"><a href="#软件" class="headerlink" title="软件"></a>软件</h5><p>操作系统：centos7<br>CDH：cdh5.8.0<br>java:jdk1.7</p>
+<h5 id="硬件"><a href="#硬件" class="headerlink" title="硬件"></a>硬件</h5><p>机器列表<br>master：172.16.2.190<br>slaves：172.16.2.191~172.16.2.194    </p>
+<a id="more"></a>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>注：所有操作都在root下    </p>
+<h6 id="修改host"><a href="#修改host" class="headerlink" title="修改host"></a>修改host</h6><pre><code># 在190上
+vim /etc/hosts
+172.16.2.190 CDH-0 
+172.16.2.191 CDH-1 
+172.16.2.192 CDH-2
+172.16.2.193 CDH-3
+172.16.2.194 CDH-4
+
+# 依次复制hosts到子节点
+scp /etc/hosts root@CDH-1:/etc
+# 修改hostname，190修改为 CDH-0，其他依次类推
+vim /etc/hostname
+CDH-0
+</code></pre><h6 id="关闭防火墙和selinux"><a href="#关闭防火墙和selinux" class="headerlink" title="关闭防火墙和selinux"></a>关闭防火墙和selinux</h6><pre><code>systemctl status firewalld.service    # 查看
+systemctl stop firewalld.service      # 停止firewall
+systemctl disable firewalld.service   # 禁止firewall开机启动
+
+# centos6关闭防火墙如下，centos7如果安装了iptables，也要按如下关掉
+service iptables stop
+chkconfig iptables off
+
+# 关闭selinux
+vim /etc/selinux/config
+SELINUX=enable 改为 SELINUX=disabled
+</code></pre><h6 id="ssh无密码登录"><a href="#ssh无密码登录" class="headerlink" title="ssh无密码登录"></a>ssh无密码登录</h6><pre><code># 在主节点190操作
+cd ~
+ssh-keygen -t rsa    # 一路按回车后，会在当前目录新建.ssh文件夹
+cd .ssh
+cat id_rsa.pub &gt; authorized_keys
+chmod 600 authorized_keys
+
+# 复制authorized_keys到各子节点
+scp authorize_keys root@CDH-1:~/.ssh/
+</code></pre><h6 id="ntp时间同步"><a href="#ntp时间同步" class="headerlink" title="ntp时间同步"></a>ntp时间同步</h6><pre><code># 在所有节点安装ntp
+yum install ntp
+# 在主节点190，加入server xxx
+vim /etc/ntp.conf
+# 在191~194各子节点，加入server CDH-0，从主节点同步时间
+vim /etc/ntp.conf
+server CDH-0
+# 启动ntp，在所有节点执行，先主后从
+service ntpd start
+</code></pre><h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><h5 id="下载Cloudera-Manager"><a href="#下载Cloudera-Manager" class="headerlink" title="下载Cloudera Manager"></a>下载Cloudera Manager</h5><p><a href="http://www.cloudera.com/downloads.html" target="_blank" rel="noopener">http://www.cloudera.com/downloads.html</a><br><a href="http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.8.0/RPMS/x86_64/" target="_blank" rel="noopener">http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/5.8.0/RPMS/x86_64/</a><br><a href="http://archive.cloudera.com/cm5/cm/5/" target="_blank" rel="noopener">http://archive.cloudera.com/cm5/cm/5/</a><br>下载RPMS/x86_64下所有的rpm文件<br>cm下载保存路径为：/home/dream/download/cm</p>
+<h5 id="下载CDH"><a href="#下载CDH" class="headerlink" title="下载CDH"></a>下载CDH</h5><p><a href="http://archive.cloudera.com/cdh5/parcels/5.8.0/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/parcels/5.8.0/</a><br>下载对应版本的文件<br>CDH-5.8.0-1.cdh5.8.0.p0.42-el7.parcel<br>CDH-5.8.0-1.cdh5.8.0.p0.42-el7.parcel.sha1<br>manifest.json<br>cdh下载保存路径为：/opt/cloudera/parcel-repo/</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><h5 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h5><p>在所有节点安装jdk<br>这里安装cloudera推荐的jdk版本：oracle-j2sdk1.7-1.7.0+update67-1.x86_64.rpm<br>yum localinstall –nogpgcheck oracle-j2sdk1.7-1.7.0+update67-1.x86_64.rpm<br>默认安装路径为：<br>配置环境变量，在/etc/profile中加入</p>
+<pre><code>export JAVA_HOME=/usr/java/cloudera/jdk1.7.0_67
+export JRE_HOME=$JAVA_HOME/jre  
+export CLASSPATH=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH
+export PATH=$PATH:$JAVA_HOME/bin
+</code></pre><h5 id="安装cloundera-Manager"><a href="#安装cloundera-Manager" class="headerlink" title="安装cloundera Manager"></a>安装cloundera Manager</h5><pre><code># 主节点安装所有
+cd /home/dream/download/cm
+yum localinstall --nogpgcheck *.rpm
+# 子节点安装如下2个即可
+yum localinstall --nogpgcheck cloudera-manager-agent-5.8.0-1.cm580.p0.42.el7.x86_64.rpm.rpm
+yum localinstall --nogpgcheck cloudera-manager-daemons-5.8.0-1.cm580.p0.42.el7.x86_64.rpm
+</code></pre><h6 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h6><pre><code># 主节点
+/etc/init.d/cloudera-scm-server restart
+# 子节点
+/etc/init.d/cloudera-scm-agent start
+# 修改系统参数，然后加入开机启动
+vim /etc/rc.local 
+echo never &gt; /sys/kernel/mm/transparent_hugepage/defrag
+source /etc/rc.local
+# 在/etc/sysctl.conf 文件里添加如下参数：
+vm.swappiness=10
+</code></pre><h6 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h6><p>浏览器输入：<a href="http://CDH-0:7180/，默认用户名和密码都为：admin" target="_blank" rel="noopener">http://CDH-0:7180/，默认用户名和密码都为：admin</a></p>
+<h5 id="安装CDH服务"><a href="#安装CDH服务" class="headerlink" title="安装CDH服务"></a>安装CDH服务</h5><p>准备文件    </p>
+<pre><code># 所有节点都需要有下面的文件
+cd /opt/cloudera/parcel-repo/
+# .sha1文件后缀更改为.sha
+mv CDH-5.8.0-1.cdh5.8.0.p0.42-el7.parcel.sha1 CDH-5.8.0-1.cdh5.8.0.p0.42-el7.parcel.sha
+</code></pre><p>安装直接在<a href="http://CDH-0:7180/按照提示安装即可" target="_blank" rel="noopener">http://CDH-0:7180/按照提示安装即可</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CDH/" rel="tag"># CDH</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/04/experience/" rel="next" title="经验">
+                <i class="fa fa-chevron-left"></i> 经验
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/26/log4j/" rel="prev" title="log4j">
+                log4j <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="晨曦之光">
+            
+              <p class="site-author-name" itemprop="name">晨曦之光</p>
+              <p class="site-description motion-element" itemprop="description">梦想，不是浮躁，而是沉淀和积累</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#系统环境"><span class="nav-number">1.</span> <span class="nav-text">系统环境</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#软件"><span class="nav-number">1.1.</span> <span class="nav-text">软件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#硬件"><span class="nav-number">1.2.</span> <span class="nav-text">硬件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#修改host"><span class="nav-number">2.0.1.</span> <span class="nav-text">修改host</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#关闭防火墙和selinux"><span class="nav-number">2.0.2.</span> <span class="nav-text">关闭防火墙和selinux</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#ssh无密码登录"><span class="nav-number">2.0.3.</span> <span class="nav-text">ssh无密码登录</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#ntp时间同步"><span class="nav-number">2.0.4.</span> <span class="nav-text">ntp时间同步</span></a></li></ol></li></ol><li class="nav-item nav-level-4"><a class="nav-link" href="#下载"><span class="nav-number">3.</span> <span class="nav-text">下载</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下载Cloudera-Manager"><span class="nav-number">3.1.</span> <span class="nav-text">下载Cloudera Manager</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下载CDH"><span class="nav-number">3.2.</span> <span class="nav-text">下载CDH</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装"><span class="nav-number">4.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装JDK"><span class="nav-number">4.1.</span> <span class="nav-text">安装JDK</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装cloundera-Manager"><span class="nav-number">4.2.</span> <span class="nav-text">安装cloundera Manager</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#启动"><span class="nav-number">4.2.1.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#访问"><span class="nav-number">4.2.2.</span> <span class="nav-text">访问</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装CDH服务"><span class="nav-number">4.3.</span> <span class="nav-text">安装CDH服务</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">晨曦之光</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=1272711322&web_id=1272711322" language="JavaScript"></script>
+  </div>
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
